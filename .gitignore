@@ -17,5 +17,4 @@ agent/*/build/
 android/*/build/
 ui/*/build/
 
-# Gradle wrapper binary
-gradle/wrapper/gradle-wrapper.jar
+# Gradle wrapper binary (committed for CI builds)
