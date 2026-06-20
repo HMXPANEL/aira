@@ -1,11 +1,13 @@
 package com.androidassistant.core.network
 
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
 
 object HttpClientProvider {
+
+    val JSON_MEDIA_TYPE: MediaType = "application/json; charset=utf-8".toMediaType()
 
     fun createClient(
         connectTimeout: Long = 30,
@@ -29,6 +31,4 @@ object HttpClientProvider {
             }
             .build()
     }
-
-    val JSON_MEDIA_TYPE: MediaType = MediaType.get("application/json; charset=utf-8")
 }
