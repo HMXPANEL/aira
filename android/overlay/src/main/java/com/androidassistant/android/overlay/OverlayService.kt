@@ -13,7 +13,6 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.compose.ui.platform.ComposeView
-import com.androidassistant.R
 import com.androidassistant.ui.chat.ChatScreen
 import com.androidassistant.agent.engine.AgentOrchestrator
 import kotlinx.coroutines.CoroutineScope

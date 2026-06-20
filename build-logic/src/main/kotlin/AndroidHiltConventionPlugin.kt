@@ -1,11 +1,12 @@
 package com.androidassistant.buildlogic
 
+import com.android.build.api.dsl.LibraryExtension
+import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.implementation
-import org.gradle.kotlin.dsl.ksp
+import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class AndroidHiltConventionPlugin : Plugin<Project> {
     override fun apply(project: Project) {
@@ -13,27 +14,20 @@ class AndroidHiltConventionPlugin : Plugin<Project> {
         project.plugins.apply("org.jetbrains.kotlin.android")
         project.plugins.apply("com.google.devtools.ksp")
 
-        project.configure<com.android.build.api.dsl.BaseLibraryExtension> {
+        project.extensions.configure<LibraryExtension> {
             compileSdk = 35
-            namespace = "com.androidassistant.${project.name.replace(":core:", "core.").replace(":data:", "data.").replace(":agent:", "agent.").replace(":tool:", "tool.").replace(":ui:", "ui.").replace(":android:", "android.")}"
-
             defaultConfig {
                 minSdk = 26
                 targetSdk = 35
             }
-
             compileOptions {
                 sourceCompatibility = JavaVersion.VERSION_17
                 targetCompatibility = JavaVersion.VERSION_17
             }
+        }
 
-            kotlinOptions {
-                jvmTarget = "17"
-            }
-
-            ksp {
-                arg("ksp.incremental", "true")
-            }
+        project.tasks.withType<KotlinCompile>().configureEach {
+            kotlinOptions.jvmTarget = "17"
         }
 
         project.dependencies {
