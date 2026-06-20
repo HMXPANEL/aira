@@ -8,13 +8,13 @@ import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.sse.EventSource
 import okhttp3.sse.EventSourceListener
 import okhttp3.sse.EventSources
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
-import java.util.UUID
 
 class GeminiApi(apiKey: String) {
 
@@ -36,7 +36,7 @@ class GeminiApi(apiKey: String) {
         return withContext(Dispatchers.IO) {
             try {
                 val json = buildRequestJson(request)
-                val body = RequestBody.create(HttpClientProvider.JSON_MEDIA_TYPE, json)
+                val body = json.toRequestBody(HttpClientProvider.JSON_MEDIA_TYPE)
                 val url = "${baseUrl}models/$model:generateContent?key=$_apiKey"
 
                 val httpRequest = Request.Builder()
@@ -69,7 +69,7 @@ class GeminiApi(apiKey: String) {
         onError: (String) -> Unit
     ): EventSource {
         val json = buildRequestJson(request)
-        val body = RequestBody.create(HttpClientProvider.JSON_MEDIA_TYPE, json)
+        val body = json.toRequestBody(HttpClientProvider.JSON_MEDIA_TYPE)
         val url = "${baseUrl}models/$model:streamGenerateContent?key=$_apiKey"
 
         val httpRequest = Request.Builder()

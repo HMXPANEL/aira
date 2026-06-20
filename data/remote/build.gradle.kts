@@ -33,10 +33,12 @@ dependencies {
     // OkHttp
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
+    implementation(libs.okhttp.sse)
+
+    // Data
+    implementation(project(":data:local"))
 
     // Coroutines
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
-
-
 }

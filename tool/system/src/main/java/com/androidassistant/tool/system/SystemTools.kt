@@ -130,7 +130,7 @@ class SystemTools(private val context: Context) {
         return try {
             val intent = Intent(Settings.ACTION_TIMER_SETTINGS).apply {
                 putExtra("android.intent.extra.alarm.SECONDS", durationSeconds)
-                putExtra("android.intro.extra.alarm.MESSAGE", label)
+                putExtra("android.intent.extra.alarm.MESSAGE", label)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             context.startActivity(intent)

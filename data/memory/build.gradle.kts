@@ -36,6 +36,9 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
 
+    // Data
+    implementation(project(":data:local"))
+
     // Koin
     implementation(libs.koin.core)
     implementation(libs.koin.android)

@@ -1,12 +1,12 @@
 package com.androidassistant.data.memory.embedding
 
-import android.util.Base64
 import com.androidassistant.core.common.Result
 import com.androidassistant.core.network.HttpClientProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
@@ -41,9 +41,8 @@ class EmbeddingService(private val apiKey: String) {
                     put("outputDimensionality", DIMENSIONS)
                 }
 
-                val body = RequestBody.create(
-                    HttpClientProvider.JSON_MEDIA_TYPE,
-                    requestBody.toString()
+                val body = requestBody.toString().toRequestBody(
+                    HttpClientProvider.JSON_MEDIA_TYPE
                 )
 
                 val request = Request.Builder()
