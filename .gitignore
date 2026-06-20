@@ -1,0 +1,21 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# App build outputs
+app/build/
+core/*/build/
+data/*/build/
+agent/*/build/
+android/*/build/
+ui/*/build/
+
+# Gradle wrapper binary
+gradle/wrapper/gradle-wrapper.jar
