@@ -9,7 +9,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val dataMemoryModule = module {
-    single { MemoryDatabase.create(androidContext()) }
+    single { MemoryDatabase.getInstance(androidContext()) }
     single { get<MemoryDatabase>().semanticMemoryDao() }
     single { get<MemoryDatabase>().episodicMemoryDao() }
 

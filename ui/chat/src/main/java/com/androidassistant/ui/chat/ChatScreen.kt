@@ -140,6 +140,17 @@ fun ChatScreen(
                 onInputChange = { viewModel.updateInputText(it) },
                 onSend = { viewModel.sendMessage(it) }
             )
+
+            // Approval Dialog
+            state.pendingApproval?.let { request ->
+                ApprovalDialog(
+                    request = request,
+                    onApprove = { approve, modifiedArgs ->
+                        viewModel.respondToApproval(approve, modifiedArgs)
+                    },
+                    onDismiss = { viewModel.respondToApproval(false) }
+                )
+            }
         }
     }
 }

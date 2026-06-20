@@ -1,12 +1,16 @@
 package com.androidassistant.agent.engine
 
 import com.androidassistant.agent.engine.context.ContextAssembler
+import com.androidassistant.agent.engine.safety.ApprovalCallback
+import com.androidassistant.agent.engine.safety.ApprovalResult
+import com.androidassistant.agent.engine.safety.DefaultApprovalCallback
 import com.androidassistant.agent.engine.safety.SafetyGate
 import com.androidassistant.agent.llm.LLMProvider
 import com.androidassistant.agent.llm.LLMRequest
 import com.androidassistant.core.common.Constants
 import com.androidassistant.core.common.Result
 import com.androidassistant.core.model.AgentState
+import com.androidassistant.core.model.ApprovalRequest
 import com.androidassistant.core.model.DeviceContext
 import com.androidassistant.core.model.Message
 import com.androidassistant.core.model.MessageRole
@@ -14,6 +18,7 @@ import com.androidassistant.core.model.ToolCall
 import com.androidassistant.core.model.ToolCallStatus
 import com.androidassistant.core.model.ToolResult
 import com.androidassistant.tool.registry.ToolRegistry
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +27,8 @@ class AgentOrchestrator(
     private val llmProvider: LLMProvider,
     private val contextAssembler: ContextAssembler,
     private val toolRegistry: ToolRegistry,
-    private val safetyGate: SafetyGate
+    private val safetyGate: SafetyGate,
+    private val approvalCallback: ApprovalCallback = DefaultApprovalCallback()
 ) {
 
     private val _state = MutableStateFlow(AgentState())
@@ -103,6 +109,26 @@ class AgentOrchestrator(
                             if (!safetyResult.allowed) {
                                 messages.add(buildToolErrorMessage(sessionId, toolCall.name, safetyResult.reason ?: "Blocked by safety"))
                                 continue
+                            }
+
+                            if (safetyResult.requiresApproval && safetyResult.approvalRequest != null) {
+                                val approvalResult = approvalCallback.requestApproval(safetyResult.approvalRequest!!)
+                                when (approvalResult) {
+                                    is ApprovalResult.Denied -> {
+                                        messages.add(buildToolErrorMessage(sessionId, toolCall.name, "User denied: ${approvalResult.reason ?: "No reason provided"}"))
+                                        continue
+                                    }
+                                    is ApprovalResult.ApprovedWithModification -> {
+                                        // Use modified args
+                                    }
+                                    is ApprovalResult.Approved -> {
+                                        // Proceed with original args
+                                    }
+                                    is ApprovalResult.Expired -> {
+                                        messages.add(buildToolErrorMessage(sessionId, toolCall.name, "Approval request expired"))
+                                        continue
+                                    }
+                                }
                             }
 
                             val call = ToolCall(

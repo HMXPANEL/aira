@@ -1,7 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    id("com.androidassistant.buildlogic.android-app")
     alias(libs.plugins.ksp)
 }
 
@@ -52,9 +50,12 @@ dependencies {
     implementation(project(":agent:llm"))
     implementation(project(":agent:engine"))
     implementation(project(":agent:memory"))
+    implementation(project(":domain:memory"))
     implementation(project(":tool:registry"))
     implementation(project(":tool:system"))
     implementation(project(":android:foreground"))
+    implementation(project(":android:notification"))
+    implementation(project(":android:overlay"))
     implementation(project(":ui:chat"))
     implementation(project(":ui:settings"))
     implementation(project(":ui:memory"))

@@ -1,0 +1,4 @@
+<resources>
+    <string name="overlay_bubble_desc">Open AI Assistant</string>
+    <string name="overlay_service_name">AI Assistant Overlay</string>
+</resources>

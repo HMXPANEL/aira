@@ -5,9 +5,11 @@ import com.androidassistant.agent.engine.di.agentEngineModule
 import com.androidassistant.agent.llm.di.agentLlmModule
 import com.androidassistant.agent.memory.di.agentMemoryModule
 import com.androidassistant.android.foreground.di.androidForegroundModule
+import com.androidassistant.android.notification.di.androidNotificationModule
 import com.androidassistant.data.local.di.dataLocalModule
 import com.androidassistant.data.memory.di.dataMemoryModule
 import com.androidassistant.data.remote.di.dataRemoteModule
+import com.androidassistant.domain.memory.di.domainMemoryModule
 import com.androidassistant.tool.registry.di.toolRegistryModule
 import com.androidassistant.tool.system.di.systemToolsModule
 import com.androidassistant.ui.chat.di.chatModule
@@ -33,12 +35,16 @@ class AssistantApplication : Application() {
                 agentEngineModule,
                 agentMemoryModule,
 
+                // Domain
+                domainMemoryModule,
+
                 // Tools
                 toolRegistryModule,
                 systemToolsModule,
 
                 // Android integration
                 androidForegroundModule,
+                androidNotificationModule,
 
                 // UI
                 chatModule,

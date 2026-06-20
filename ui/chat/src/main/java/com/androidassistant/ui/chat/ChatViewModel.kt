@@ -3,8 +3,12 @@ package com.androidassistant.ui.chat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.androidassistant.agent.engine.AgentOrchestrator
+import com.androidassistant.agent.engine.safety.ApprovalCallback
+import com.androidassistant.agent.engine.safety.DefaultApprovalCallback
 import com.androidassistant.core.common.Result
 import com.androidassistant.core.model.AgentMode
+import com.androidassistant.core.model.ApprovalRequest
+import com.androidassistant.core.model.ApprovalResult
 import com.androidassistant.core.model.DeviceContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +18,8 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 class ChatViewModel(
-    private val agentOrchestrator: AgentOrchestrator
+    private val agentOrchestrator: AgentOrchestrator,
+    private val approvalCallback: DefaultApprovalCallback
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChatUiState())
@@ -23,6 +28,7 @@ class ChatViewModel(
     init {
         _uiState.update { it.copy(sessionId = UUID.randomUUID().toString()) }
         observeAgentState()
+        observeApprovals()
     }
 
     fun sendMessage(text: String) {
@@ -112,6 +118,23 @@ class ChatViewModel(
         agentOrchestrator.reset()
     }
 
+    fun respondToApproval(approve: Boolean, modifiedArgs: Map<String, Any>? = null) {
+        val request = _uiState.value.pendingApproval
+        if (request != null) {
+            val result = if (approve) {
+                if (modifiedArgs != null) {
+                    ApprovalResult.ApprovedWithModification(modifiedArgs)
+                } else {
+                    ApprovalResult.Approved()
+                }
+            } else {
+                ApprovalResult.Denied("User denied")
+            }
+            approvalCallback.respond(request.id, result)
+            _uiState.update { it.copy(pendingApproval = null) }
+        }
+    }
+
     private fun observeAgentState() {
         viewModelScope.launch {
             agentOrchestrator.state.collect { state ->
@@ -122,6 +145,15 @@ class ChatViewModel(
                         error = state.lastError
                     )
                 }
+            }
+        }
+    }
+
+    private fun observeApprovals() {
+        viewModelScope.launch {
+            val channel = approvalCallback.getApprovalChannel()
+            for (request in channel) {
+                _uiState.update { it.copy(pendingApproval = request) }
             }
         }
     }

@@ -1,13 +1,16 @@
 package com.androidassistant.agent.engine.safety
 
 import com.androidassistant.core.common.Constants
+import com.androidassistant.core.model.ApprovalRequest
+import com.androidassistant.core.model.ApprovalResult
 import com.androidassistant.tool.registry.ToolDefinition
 import com.androidassistant.tool.registry.ToolPermissionLevel
 
 data class SafetyResult(
     val allowed: Boolean,
     val reason: String? = null,
-    val requiresApproval: Boolean = false
+    val requiresApproval: Boolean = false,
+    val approvalRequest: ApprovalRequest? = null
 )
 
 class SafetyGate {
@@ -34,7 +37,32 @@ class SafetyGate {
             else -> tool.permissionLevel >= ToolPermissionLevel.SENSITIVE
         }
 
-        return SafetyResult(allowed = true, requiresApproval = needsApproval)
+        if (needsApproval) {
+            val request = ApprovalRequest(
+                id = "approval_${System.currentTimeMillis()}",
+                toolName = tool.name,
+                toolDescription = tool.description,
+                args = args,
+                permissionLevel = tool.permissionLevel,
+                explanation = generateExplanation(tool, args)
+            )
+            return SafetyResult(allowed = true, requiresApproval = true, approvalRequest = request)
+        }
+
+        return SafetyResult(allowed = true)
+    }
+
+    private fun generateExplanation(tool: ToolDefinition, args: Map<String, Any>): String {
+        return when (tool.name) {
+            "open_app" -> "Opening app: ${args["package_name"]}"
+            "set_timer" -> "Setting timer for ${args["duration_seconds"]} seconds"
+            "read_notifications" -> "Reading recent notifications"
+            "dismiss_notification" -> "Dismissing a notification"
+            "click_notification" -> "Clicking a notification action"
+            "get_device_info" -> "Reading device information"
+            "get_current_time" -> "Getting current time"
+            else -> "Executing ${tool.name} with args: $args"
+        }
     }
 
     private fun checkRateLimit(toolName: String): Boolean {

@@ -10,6 +10,7 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+    includeBuild("build-logic")
 }
 
 dependencyResolutionManagement {
@@ -50,6 +51,9 @@ include(":data:memory")
 // Agent
 include(":agent:memory")
 
+// Domain
+include(":domain:memory")
+
 // UI
 include(":ui:chat")
 include(":ui:settings")
@@ -57,3 +61,5 @@ include(":ui:memory")
 
 // Android
 include(":android:foreground")
+include(":android:notification")
+include(":android:overlay")

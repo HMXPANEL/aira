@@ -1,6 +1,5 @@
 plugins {
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.android.library)
+    id("com.androidassistant.buildlogic.android-lib")
     alias(libs.plugins.ksp)
 }
 
@@ -31,6 +30,9 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
+
+    // Vector Search (sqlite-vec)
+    implementation(libs.sqlite.vec)
 
     // OkHttp
     implementation(libs.okhttp)

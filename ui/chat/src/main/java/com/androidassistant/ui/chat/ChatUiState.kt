@@ -1,6 +1,7 @@
 package com.androidassistant.ui.chat
 
 import com.androidassistant.core.model.AgentMode
+import com.androidassistant.core.model.ApprovalRequest
 import com.androidassistant.core.model.DeviceContext
 
 data class ChatUiState(
@@ -9,8 +10,9 @@ data class ChatUiState(
     val isProcessing: Boolean = false,
     val agentMode: AgentMode = AgentMode.IDLE,
     val error: String? = null,
+    val sessionId: String = "",
     val deviceContext: DeviceContext = DeviceContext(),
-    val sessionId: String = ""
+    val pendingApproval: ApprovalRequest? = null
 )
 
 data class ChatMessage(
@@ -18,8 +20,6 @@ data class ChatMessage(
     val content: String,
     val isUser: Boolean,
     val timestamp: Long,
-    val isStreaming: Boolean = false,
-    val toolCallName: String? = null,
-    val toolCallResult: String? = null,
-    val isError: Boolean = false
+    val isError: Boolean = false,
+    val toolCallName: String? = null
 )

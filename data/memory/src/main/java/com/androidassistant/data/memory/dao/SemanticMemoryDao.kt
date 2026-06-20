@@ -4,6 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.RawQuery
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.androidassistant.data.memory.entity.SemanticMemoryEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -39,4 +41,25 @@ interface SemanticMemoryDao {
 
     @Query("SELECT COUNT(*) FROM semantic_memories")
     suspend fun count(): Int
+
+    // Vector search using sqlite-vec
+    @RawQuery
+    suspend fun vectorSearch(query: SimpleSQLiteQuery): List<VectorSearchResult>
+
+    @RawQuery
+    suspend fun insertVector(memoryId: String, embedding: ByteArray): Long
+
+    @RawQuery
+    suspend fun deleteVector(memoryId: String): Int
+
+    @Query("SELECT * FROM semantic_memories WHERE id IN (:ids)")
+    suspend fun getByIds(ids: List<String>): List<SemanticMemoryEntity>
+
+    @Query("SELECT * FROM semantic_memories WHERE created_at < :before ORDER BY importance ASC LIMIT :limit")
+    suspend fun getOldest(before: Long, limit: Int): List<SemanticMemoryEntity>
 }
+
+data class VectorSearchResult(
+    val rowid: Long,
+    val distance: Float
+)

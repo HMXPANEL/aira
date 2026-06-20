@@ -1,6 +1,5 @@
 plugins {
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.android.library)
+    id("com.androidassistant.buildlogic.android-lib")
     alias(libs.plugins.ksp)
 }
 
