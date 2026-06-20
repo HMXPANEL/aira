@@ -24,6 +24,7 @@ android {
 dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:common"))
+    implementation(project(":agent:llm"))
 
     implementation(libs.koin.core)
     implementation(libs.koin.android)

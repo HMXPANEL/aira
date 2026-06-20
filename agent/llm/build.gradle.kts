@@ -25,6 +25,7 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:common"))
     implementation(project(":core:network"))
+    implementation(project(":data:remote"))
 
     // Koin
     implementation(libs.koin.core)
@@ -33,6 +34,4 @@ dependencies {
     // Coroutines
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
-
-
 }

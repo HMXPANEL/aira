@@ -29,6 +29,7 @@ android {
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":data:local"))
+    implementation(project(":data:remote"))
 
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.ui)
