@@ -5,8 +5,6 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class AndroidHiltConventionPlugin : Plugin<Project> {
     override fun apply(project: Project) {
@@ -26,14 +24,8 @@ class AndroidHiltConventionPlugin : Plugin<Project> {
             }
         }
 
-        project.tasks.withType<KotlinCompile>().configureEach {
-            kotlinOptions.jvmTarget = "17"
-        }
-
-        project.dependencies {
-            add("implementation", "com.google.dagger:hilt-android:2.51.1")
-            add("ksp", "com.google.dagger:hilt-compiler:2.51.1")
-            add("implementation", "androidx.hilt:hilt-navigation-compose:1.2.0")
-        }
+        project.dependencies.add("implementation", "com.google.dagger:hilt-android:2.51.1")
+        project.dependencies.add("ksp", "com.google.dagger:hilt-compiler:2.51.1")
+        project.dependencies.add("implementation", "androidx.hilt:hilt-navigation-compose:1.2.0")
     }
 }
